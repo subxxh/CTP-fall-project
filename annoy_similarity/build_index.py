@@ -8,10 +8,11 @@ from annoy import AnnoyIndex
 # ------------------------------
 # CONFIG
 # ------------------------------
-DATA_PATH = "../data/fma_metadata_features_joined.csv" 
+DATA_PATH = "data/fma_metadata_features_joined.csv" 
 ID_COL = "track_id"
 TITLE_COL = "track_title"
 ARTIST_COL = "artist_name"
+ALBUM_COL = "album_title"
 
 FEATURE_PREFIXES = [
     "mfcc_",
@@ -21,7 +22,7 @@ FEATURE_PREFIXES = [
     "zcr_"
 ]
 
-MODEL_DIR = "model/"
+MODEL_DIR = "annoy_similarity/model/"
 os.makedirs(MODEL_DIR, exist_ok=True)
 
 # ------------------------------
@@ -46,7 +47,7 @@ X_scaled = scaler.fit_transform(X)
 joblib.dump(scaler, MODEL_DIR + "scaler.pkl")
 np.save(MODEL_DIR + "features.npy", X_scaled)
 
-df[[ID_COL, TITLE_COL, ARTIST_COL]].to_csv(MODEL_DIR + "metadata.csv", index=False)
+df[[ID_COL, TITLE_COL, ARTIST_COL, ALBUM_COL]].to_csv(MODEL_DIR + "metadata.csv", index=False)
 
 # ------------------------------
 # BUILD ANNOY INDEX
