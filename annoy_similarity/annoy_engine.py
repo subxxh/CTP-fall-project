@@ -4,7 +4,7 @@ import pandas as pd
 from annoy import AnnoyIndex
 
 class SpotifyAnnoyEngine:
-    def __init__(self, model_dir="model/", metric="euclidean"):
+    def __init__(self, model_dir="model/", metric="cosine"):
         self.scaler = joblib.load(model_dir + "scaler.pkl")
 
         self.X = np.load(model_dir + "features.npy")
