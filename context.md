@@ -30,4 +30,15 @@
 - Usage note: instantiate once in `app.py`, reuse across requests; supply `audio_path` (MP3/WAV) or an existing feature map/track_id to get a pandas `DataFrame` of neighbors with appended `distance` column.
 - Tests: `tests/test_recommendation_service.py` (dummy Annoy engine to verify vector wiring and method behavior). Suite passes via `python -m pytest`.
 
+# Context Entry CTX-GTZAN
+
+- Package: `genre_model/` (modules `config.py`, `training.py`, `inference.py`, plus `__init__.py` re-exports) and CLI `scripts/train_genre_model.py`.
+- Purpose: GTZAN RandomForest classifier with clean separation between configuration, training/artifact handling, and inference helpers for Flask routes.
+- Components:
+	- `config.py`: `TrainingConfig` dataclass + shared constants (target column, dropped columns, artifact filenames, default artifact dir).
+	- `training.py`: `load_dataset`, `_feature_columns`, pipeline builder (StandardScaler + RandomForest), `TrainingResult`, `train_and_evaluate`, `save_artifacts`, `load_feature_names`.
+	- `inference.py`: `GenreModel` loads persisted artifacts, validates incoming feature maps, and exposes `predict`, `predict_proba`, `top_k`.
+	- CLI `scripts/train_genre_model.py`: wraps `TrainingConfig` & `train_and_evaluate`, persists artifacts, prints validation accuracy. Legacy `scripts/genre_model.py` now re-exports the package for backward compatibility.
+- Tests: `tests/test_genre_model.py` covers training, artifact serialization, inference, probability normalization, and missing-feature guards.
+
 
