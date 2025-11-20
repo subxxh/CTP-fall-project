@@ -20,4 +20,14 @@
 	- `validate_model.py`: reruns scaling + compares saved metadata/features + Annoy vectors to original DF; run after building to ensure alignment.
 - Usage note: instantiate `SpotifyAnnoyEngine` once per service process, reuse for queries; ensure uploaded audio features are scaled via stored scaler before calling `query_by_features`.
 
+# Context Entry CTX-RECSVC
+
+- File: `scripts/recommendation_service.py`
+- Purpose: wraps librosa feature extraction and the Annoy engine into a minimal service class for backend routes.
+- Components:
+	- `_FEATURE_NAMES` / `_vector_from_feature_map`: enforce feature ordering expected by the scaler/Annoy index.
+	- `RecommendationService`: methods `recommend_from_audio`, `recommend_from_features`, `recommend_from_track_id`, `build_response_payload`; accepts optional pre-built `SpotifyAnnoyEngine` for DI/testing.
+- Usage note: instantiate once in `app.py`, reuse across requests; supply `audio_path` (MP3/WAV) or an existing feature map/track_id to get a pandas `DataFrame` of neighbors with appended `distance` column.
+- Tests: `tests/test_recommendation_service.py` (dummy Annoy engine to verify vector wiring and method behavior). Suite passes via `python -m pytest`.
+
 
