@@ -91,7 +91,7 @@ print("✔ PASS: Metadata rows perfectly align with the original dataframe.")
 print("\nTEST 3 — Checking Annoy index vector alignment...")
 
 f = X_saved.shape[1]
-ann = AnnoyIndex(f, "cosine")
+ann = AnnoyIndex(f, "euclidean")
 ann.load(MODEL_DIR + "ann_index.ann")
 
 test_ids = [0, 10, 500, 2222, len(X_saved)-1]
