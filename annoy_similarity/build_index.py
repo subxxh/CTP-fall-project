@@ -53,7 +53,7 @@ df[[ID_COL, TITLE_COL, ARTIST_COL, ALBUM_COL]].to_csv(MODEL_DIR + "metadata.csv"
 # BUILD ANNOY INDEX
 # ------------------------------
 f = X_scaled.shape[1]
-index = AnnoyIndex(f, "euclidean")
+index = AnnoyIndex(f, "angular")
 
 print("Building Annoy index...")
 for i, row in enumerate(X_scaled):
