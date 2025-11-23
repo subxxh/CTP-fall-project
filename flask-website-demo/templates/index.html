@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>HeartBeats</title>
+    <style>
+        /* General body styling */
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #1c4587;
+            color: #333;
+            margin: 0;
+            padding: 0;
+        }
+
+        /* Container to center content */
+        .container {
+            max-width: 800px;
+            margin: 50px auto;
+            padding: 20px;
+            background-color: #3d85c6;
+            box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+            border-radius: 10px;
+
+        }
+
+        h1,
+        h3 {
+            text-align: center;
+            color: #2c3e50;
+        }
+
+        form {
+            display: flex;
+            justify-content: center;
+            margin-bottom: 20px;
+        }
+
+        input[type="text"] {
+            width: 70%;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px 0 0 5px;
+            font-size: 16px;
+        }
+
+        button {
+            padding: 10px 20px;
+            border: none;
+            background-color: #3498db;
+            color: white;
+            font-size: 16px;
+            border-radius: 0 5px 5px 0;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background-color: #2980b9;
+        }
+
+        .youtube-embed {
+            text-align: center;
+            color: yellow;
+            outline: #333;
+            margin-bottom: 20px;
+        }
+
+        .youtube-embed iframe {
+            display: block;
+            margin: 0 auto;
+            /* Center the iframe */
+        }
+
+        a:hover {
+            text-decoration: underline;
+        }
+
+        p.error {
+            color: red;
+            font-weight: bold;
+            text-align: center;
+        }
+
+        h2 {
+            border-bottom: 2px solid #3498db;
+            padding-bottom: 5px;
+            color: #34495e;
+        }
+
+        ul.recommendations {
+            list-style: none;
+            padding: 0;
+            animation: fadeIn 1s forwards;
+        }
+
+        ul.recommendations li {
+            padding: 10px;
+            margin-bottom: 10px;
+            background-color: #ecf0f1;
+            border-radius: 5px;
+            animation: fadeIn 1s forwards;
+        }
+
+        .hearts img {
+            vertical-align: middle;
+            margin-right: 2px;
+            animation: fadeIn 1.5s forwards;
+        }
+
+        .track-info {
+            font-weight: bold;
+            margin-bottom: 5px;
+            animation: fadeIn 1.5s forwards;
+        }
+
+        .artist-info {
+            font-style: italic;
+            margin-bottom: 5px;
+            animation: fadeIn 1.5s forwards;
+        }
+
+        .distance {
+            color: #7f8c8d;
+        }
+
+        img {
+            filter: hue-rotate(60deg) brightness(387%) saturate(114%);
+        }
+
+        .beat {
+            animation: beat .45s infinite alternate;
+            text-align: center;
+        }
+
+        @keyframes beat {
+            to {
+                transform: scale(1.2);
+            }
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+            }
+
+            to {
+                opacity: 1;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <h1>HeartBeats</h1>
+        <div class="beat"><img src="/static/full.png" width="25"></div>
+        <h3>Upload a YouTube / SoundCloud / Spotify link</h3>
+
+        <form method="POST" enctype="multipart/form-data">
+            <input type="text" name="user_input" placeholder="Paste your link here...">
+            <button type="submit">Analyze</button>
+        </form>
+        {% if error %}
+        <p class="error">{{ error }}</p>
+        {% endif %}
+
+        {% if results %}
+
+        {% if embed_url %}
+        <div class="youtube-embed">
+            <p><a href="{{ embed_url }}" target="_blank">Analyzed Song:</a></p>
+            <iframe width="560" height="315" src="{{ embed_url }}" title="YouTube video player" frameborder="0"
+                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+        </div>
+        {% endif %}
+
+        {% if genre %}
+        <p>Estimated Genre: <strong>{{ genre }}</strong></p>
+        {% endif %}
+
+        <h2>Recommendations</h2>
+        <ul class="recommendations">
+            {% for row in results %}
+            <li>
+                <div class="track-info">Track: {{ row.track_title }}</div>
+                <div class="artist-info">Artist: {{ row.artist_name }}</div>
+                <div class="hearts">
+                    {% for _ in range(row.hearts.full) %}
+                    <img src="/static/full.png" width="30">
+                    {% endfor %}
+                    {% if row.hearts.half %}
+                    <img src="/static/half.png" width="30">
+                    {% endif %}
+                    {% for _ in range(row.hearts.empty) %}
+                    <img src="/static/empty.png" width="30">
+                    {% endfor %}
+                    <span class="distance">(Distance: {{ row.distance }})</span>
+                </div>
+            </li>
+            {% endfor %}
+        </ul>
+        {% endif %}
+    </div>
+</body>
+
+
+
+</html>
