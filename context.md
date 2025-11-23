@@ -15,7 +15,7 @@
 - Folder: `annoy_similarity/`
 - Purpose: build and serve an Annoy-based nearest-neighbor engine over FMA feature vectors for recommendation lookup.
 - Pipeline overview:
-	- `build_index.py`: reads `data/fma_metadata_features_joined.csv`, keeps feature columns matching prefixes (`mfcc_`, `chroma_cqt_`, `spectral_`, `rmse_`, `zcr_`), scales with `StandardScaler`, emits `model/scaler.pkl`, `model/features.npy`, `model/metadata.csv`, and builds `model/ann_index.ann` (50 trees, Euclidean metric).
+	- `build_index.py`: reads `data/processed/fma_metadata_features_joined.csv`, keeps feature columns matching prefixes (`mfcc_`, `chroma_cqt_`, `spectral_`, `rmse_`, `zcr_`), scales with `StandardScaler`, emits `model/scaler.pkl`, `model/features.npy`, `model/metadata.csv`, and builds `model/ann_index.ann` (50 trees, Euclidean metric).
 	- `annoy_engine.py`: `SpotifyAnnoyEngine` loads scaler/features/metadata/index, exposes `query_by_track_index`, `query_by_features` (scales raw feature vector), and `lookup(track_id)` helpers.
 	- `validate_model.py`: reruns scaling + compares saved metadata/features + Annoy vectors to original DF; run after building to ensure alignment.
 - Usage note: instantiate `SpotifyAnnoyEngine` once per service process, reuse for queries; ensure uploaded audio features are scaled via stored scaler before calling `query_by_features`.
