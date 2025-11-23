@@ -19,7 +19,7 @@ import joblib
 # CONFIG
 # ------------------------------
 MODEL_DIR = "annoy_similarity/model/"
-DATA_PATH = "data/fma_metadata_features_joined.csv"
+DATA_PATH = "data/processsed/fma_metadata_features_joined.csv"
 
 ID_COL = "track_id"
 TITLE_COL = "track_title"
