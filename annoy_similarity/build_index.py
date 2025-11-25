@@ -8,7 +8,7 @@ from annoy import AnnoyIndex
 # ------------------------------
 # CONFIG
 # ------------------------------
-DATA_PATH = "data/fma_metadata_features_joined.csv" 
+DATA_PATH = "data/processed/fma_metadata_features_joined.csv" 
 ID_COL = "track_id"
 TITLE_COL = "track_title"
 ARTIST_COL = "artist_name"
