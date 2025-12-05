@@ -1,209 +1,98 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
+   <head>
+      <meta charset="UTF-8" />
+      <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+      <title>HeartBeats</title>
+      <script src="https://cdn.tailwindcss.com"></script>
 
-<head>
-    <title>HeartBeats</title>
-    <style>
-        /* General body styling */
-        body {
-            font-family: Arial, sans-serif;
-            background-color: #1c4587;
-            color: #333;
-            margin: 0;
-            padding: 0;
-        }
-
-        /* Container to center content */
-        .container {
-            max-width: 800px;
-            margin: 50px auto;
-            padding: 20px;
-            background-color: #3d85c6;
-            box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
-            border-radius: 10px;
-
-        }
-
-        h1,
-        h3 {
-            text-align: center;
-            color: #2c3e50;
-        }
-
-        form {
-            display: flex;
-            justify-content: center;
-            margin-bottom: 20px;
-        }
-
-        input[type="text"] {
-            width: 70%;
-            padding: 10px;
-            border: 1px solid #ccc;
-            border-radius: 5px 0 0 5px;
-            font-size: 16px;
-        }
-
-        button {
-            padding: 10px 20px;
-            border: none;
-            background-color: #3498db;
-            color: white;
-            font-size: 16px;
-            border-radius: 0 5px 5px 0;
-            cursor: pointer;
-        }
-
-        button:hover {
-            background-color: #2980b9;
-        }
-
-        .youtube-embed {
-            text-align: center;
-            color: yellow;
-            outline: #333;
-            margin-bottom: 20px;
-        }
-
-        .youtube-embed iframe {
-            display: block;
-            margin: 0 auto;
-            /* Center the iframe */
-        }
-
-        a:hover {
-            text-decoration: underline;
-        }
-
-        p.error {
-            color: red;
-            font-weight: bold;
-            text-align: center;
-        }
-
-        h2 {
-            border-bottom: 2px solid #3498db;
-            padding-bottom: 5px;
-            color: #34495e;
-        }
-
-        ul.recommendations {
-            list-style: none;
-            padding: 0;
-            animation: fadeIn 1s forwards;
-        }
-
-        ul.recommendations li {
-            padding: 10px;
-            margin-bottom: 10px;
-            background-color: #ecf0f1;
-            border-radius: 5px;
-            animation: fadeIn 1s forwards;
-        }
-
-        .hearts img {
-            vertical-align: middle;
-            margin-right: 2px;
-            animation: fadeIn 1.5s forwards;
-        }
-
-        .track-info {
-            font-weight: bold;
-            margin-bottom: 5px;
-            animation: fadeIn 1.5s forwards;
-        }
-
-        .artist-info {
-            font-style: italic;
-            margin-bottom: 5px;
-            animation: fadeIn 1.5s forwards;
-        }
-
-        .distance {
-            color: #7f8c8d;
-        }
-
-        img {
-            filter: hue-rotate(60deg) brightness(387%) saturate(114%);
-        }
-
-        .beat {
-            animation: beat .45s infinite alternate;
-            text-align: center;
-        }
-
-        @keyframes beat {
+      <style>
+         /* Smooth fade + scale animation */
+         .fade-up {
+            animation: fadeUp 0.6s ease-out forwards;
+            opacity: 0;
+            transform: translateY(10px);
+         }
+         @keyframes fadeUp {
             to {
-                transform: scale(1.2);
+               opacity: 1;
+               transform: translateY(0);
             }
-        }
+         }
+      </style>
+   </head>
 
-        @keyframes fadeIn {
-            from {
-                opacity: 0;
-            }
+   <body class="bg-[#0c0c0e] text-white font-inter">
+      <!-- Background Glow -->
+      <div
+         class="absolute inset-0 bg-gradient-to-br from-pink-500/10 via-purple-600/5 to-transparent blur-3xl"
+      ></div>
 
-            to {
-                opacity: 1;
-            }
-        }
-    </style>
-</head>
+      <!-- Center Content -->
+      <div
+         class="relative z-10 flex flex-col items-center justify-center min-h-screen px-6"
+      >
+         <!-- LOGO -->
+         <div class="fade-up delay-100 flex flex-col items-center mb-8">
+            <div
+               class="w-24 h-24 bg-gradient-to-br from-pink-500 to-red-500 rounded-3xl shadow-[0_0_30px_rgba(255,60,80,0.6)] flex items-center justify-center"
+            >
+               <img src="/static/full.png" class="w-12 drop-shadow-xl" />
+            </div>
 
-<body>
-    <div class="container">
-        <h1>HeartBeats</h1>
-        <div class="beat"><img src="/static/full.png" width="25"></div>
-        <h3>Upload a YouTube / SoundCloud / Spotify link</h3>
+            <h1 class="text-5xl font-bold mt-6 tracking-tight">HeartBeats</h1>
+            <p class="text-gray-400 mt-3 text-sm">
+               Upload a YouTube / SoundCloud / Spotify link or upload a song
+               file
+            </p>
+         </div>
 
-        <form method="POST" enctype="multipart/form-data">
-            <input type="text" name="user_input" placeholder="Paste your link here...">
-            <button type="submit">Analyze</button>
-        </form>
-        {% if error %}
-        <p class="error">{{ error }}</p>
-        {% endif %}
+         <!-- MODERN GLASS CARD -->
+         <div
+            class="fade-up delay-200 bg-white/5 backdrop-blur-2xl border border-white/10 shadow-[0_8px_40px_rgb(0,0,0,0.45)] rounded-3xl p-10 max-w-3xl w-full"
+         >
+            <form method="POST" enctype="multipart/form-data" class="space-y-6">
+               <!-- INPUT SECTION -->
+               <div class="flex flex-col gap-4">
+                  <div
+                     class="bg-black/20 backdrop-blur-xl px-6 py-4 rounded-2xl border border-white/10"
+                  >
+                     <input
+                        type="text"
+                        name="user_input"
+                        placeholder="Paste your link here..."
+                        class="w-full bg-transparent text-gray-200 placeholder-gray-500 text-lg outline-none"
+                     />
+                  </div>
 
-        {% if results %}
+                  <div class="flex items-center justify-between">
+                     <span class="text-gray-500 text-sm">or</span>
 
-        {% if embed_url %}
-        <div class="youtube-embed">
-            <p><a href="{{ embed_url }}" target="_blank">Analyzed Song:</a></p>
-            <iframe width="560" height="315" src="{{ embed_url }}" title="YouTube video player" frameborder="0"
-                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-                referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
-        </div>
-        {% endif %}
+                     <label
+                        class="cursor-pointer bg-black/20 px-5 py-3 rounded-xl border border-white/10 hover:bg-white/10 transition"
+                     >
+                        Choose file
+                        <input
+                           type="file"
+                           name="audio_file"
+                           class="hidden"
+                           accept=".mp3,.wav,.m4a"
+                        />
+                     </label>
+                  </div>
+               </div>
 
-        {% if genre %}
-        <p>Estimated Genre: <strong>{{ genre }}</strong></p>
-        {% endif %}
-
-        <h2>Recommendations</h2>
-        <ul class="recommendations">
-            {% for row in results %}
-            <li>
-                <div class="track-info">Track: {{ row.track_title }}</div>
-                <div class="artist-info">Artist: {{ row.artist_name }}</div>
-                <div class="hearts">
-                    {% for _ in range(row.hearts.full) %}
-                    <img src="/static/full.png" width="30">
-                    {% endfor %}
-                    {% if row.hearts.half %}
-                    <img src="/static/half.png" width="30">
-                    {% endif %}
-                    {% for _ in range(row.hearts.empty) %}
-                    <img src="/static/empty.png" width="30">
-                    {% endfor %}
-                    <span class="distance">(Distance: {{ row.distance }})</span>
-                </div>
-            </li>
-            {% endfor %}
-        </ul>
-        {% endif %}
-    </div>
-</body>
-
-
-
+               <!-- ANALYZE BUTTON -->
+               <div class="text-center">
+                  <button
+                     type="submit"
+                     class="w-48 py-4 rounded-xl text-lg font-semibold text-white bg-gradient-to-r from-pink-500 to-red-500 shadow-lg hover:scale-105 hover:shadow-[0_0_25px_rgba(255,80,110,0.6)] transition-all duration-300"
+                  >
+                     Analyze
+                  </button>
+               </div>
+            </form>
+         </div>
+      </div>
+   </body>
 </html>

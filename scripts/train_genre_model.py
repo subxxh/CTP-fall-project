@@ -3,8 +3,16 @@ from __future__ import annotations
 
 import argparse
 from pathlib import Path
+import sys
 
-from genre_model import TrainingConfig, save_artifacts, train_and_evaluate
+# Add project root to PYTHONPATH
+ROOT = Path(__file__).resolve().parents[1]
+sys.path.append(str(ROOT))
+
+# from genre_model import TrainingConfig, save_artifacts, train_and_evaluate
+from genre_model.config import TrainingConfig
+from genre_model.training import save_artifacts, train_and_evaluate
+
 
 _DEFAULT_DATASET = Path("gtzan_training/features_30_cleaned.csv")
 _DEFAULT_ARTIFACT_DIR = Path("genre_model/artifacts")

@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+   <head>
+      <meta charset="UTF-8" />
+      <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+      <title>HeartBeats Results</title>
+      <script src="https://cdn.tailwindcss.com"></script>
+
+      <style>
+         /* Fade + slide animation */
+         .fade-up {
+            opacity: 0;
+            transform: translateY(10px);
+            animation: fadeUp 0.6s ease-out forwards;
+         }
+         @keyframes fadeUp {
+            to {
+               opacity: 1;
+               transform: translateY(0);
+            }
+         }
+      </style>
+   </head>
+
+   <body class="bg-[#0c0c0e] text-white font-inter">
+      <!-- Background Glow -->
+      <div
+         class="absolute inset-0 bg-gradient-to-br from-pink-500/10 via-purple-600/5 to-transparent blur-3xl"
+      ></div>
+
+      <div class="relative z-10 flex flex-col items-center px-6 py-12">
+         <!-- HEADER -->
+         <div class="fade-up flex items-center gap-3 mb-10">
+            <div
+               class="w-12 h-12 rounded-2xl flex items-center justify-center bg-gradient-to-br from-pink-500 to-red-500 shadow-lg"
+            >
+               <img src="/static/full.png" class="w-7" />
+            </div>
+            <h1 class="text-3xl font-bold tracking-tight">
+               HeartBeats Results
+            </h1>
+         </div>
+
+         <!-- GENRE BADGE -->
+         {% if genre %}
+         <div
+            class="fade-up bg-white/5 backdrop-blur-xl px-6 py-4 rounded-2xl border border-white/10 shadow-lg text-center mb-10"
+         >
+            <p class="text-gray-300 text-sm uppercase tracking-wide">
+               Estimated Genre
+            </p>
+            <p
+               class="text-xl font-semibold bg-gradient-to-r from-pink-400 to-red-400 bg-clip-text text-transparent"
+            >
+               {{ genre }}
+            </p>
+         </div>
+         {% endif %}
+
+         <!-- SECTION TITLE -->
+         <h2 class="fade-up text-2xl font-semibold mb-6 w-full max-w-6xl">
+            Recommended Tracks
+         </h2>
+
+         <!-- RECOMMENDATION GRID -->
+         <div
+            class="fade-up grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8 max-w-6xl w-full"
+         >
+            {% for row in results %}
+            <div
+               class="aspect-square rounded-2xl p-6 bg-gradient-to-br
+            {{ gradients[loop.index0 % gradients|length] }}
+            shadow-xl border border-white/10
+            hover:scale-105 hover:shadow-[0_0_40px_rgba(255,60,100,0.4)]
+            transition duration-300 backdrop-blur-xl flex flex-col justify-between"
+            >
+               <!-- Track Title -->
+               <p class="text-lg font-semibold mb-1">{{ row.track_title }}</p>
+
+               <!-- Artist -->
+               <p class="text-sm text-gray-200 italic mb-4">
+                  {{ row.artist_name }}
+               </p>
+
+               <!-- Hearts -->
+               <div class="flex items-center gap-1 mb-3">
+                  {% for _ in range(row.hearts.full) %}
+                  <img src="/static/full.png" class="w-5" />
+                  {% endfor %} {% if row.hearts.half %}
+                  <img src="/static/half.png" class="w-5" />
+                  {% endif %} {% for _ in range(row.hearts.empty) %}
+                  <img src="/static/empty.png" class="w-5 opacity-40" />
+                  {% endfor %}
+               </div>
+
+               <!-- Distance -->
+               <p class="text-xs opacity-75">Distance: {{ row.distance }}</p>
+            </div>
+            {% endfor %}
+         </div>
+
+         <!-- BUTTON -->
+         <div class="fade-up mt-12">
+            <a
+               href="/"
+               class="px-6 py-3 rounded-xl bg-gradient-to-r from-pink-500 to-red-500 shadow-lg hover:scale-105 transition text-white font-semibold text-lg"
+            >
+               Analyze Another Song
+            </a>
+         </div>
+      </div>
+   </body>
+</html>
