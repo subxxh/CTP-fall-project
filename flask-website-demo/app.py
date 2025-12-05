@@ -1,6 +1,7 @@
 from flask import Flask, request, render_template, redirect, url_for
 import sys
 from pathlib import Path
+import os
 
 # --- Project Path Fix ---
 PROJECT_ROOT = Path(__file__).resolve().parent.parent
@@ -32,9 +33,24 @@ app = Flask(__name__)
 
 DEBUG_MODE = False
 
-# Models (loaded once)
-recommender = RecommendationService(model_dir="../annoy_similarity/model/")
-classifier = GenreModel(artifact_dir="../genre_model/artifacts")
+# FIXED: Use absolute paths instead of relative
+recommender = RecommendationService(model_dir=str(PROJECT_ROOT / "annoy_similarity" / "model") + "/")
+
+# Make classifier optional - won't crash if model file is missing
+try:
+    classifier = GenreModel(artifact_dir=str(PROJECT_ROOT / "genre_model" / "artifacts"))
+    CLASSIFIER_AVAILABLE = True
+    print("✅ Genre classifier loaded successfully!")
+except FileNotFoundError as e:
+    print(f"⚠️  Genre classifier model not found: {e}")
+    print("⚠️  Genre prediction will be disabled. App will continue without it.")
+    classifier = None
+    CLASSIFIER_AVAILABLE = False
+except Exception as e:
+    print(f"⚠️  Error loading genre classifier: {e}")
+    print("⚠️  Genre prediction will be disabled. App will continue without it.")
+    classifier = None
+    CLASSIFIER_AVAILABLE = False
 
 DEBUG_AUDIO_PATH = PROJECT_ROOT / "flask-website-demo" / "test.wav"
 DEBUG_EMBED_URL = "https://www.youtube.com/embed/dQw4w9WgXcQ"
@@ -84,8 +100,10 @@ def results_page():
 
     # ---- CASE 1: FILE UPLOAD ----
     if cached_file_bytes:
-        upload_path = Path("uploads") / "uploaded_audio.wav"
-        upload_path.parent.mkdir(exist_ok=True)
+        # FIXED: Use absolute path for uploads
+        upload_dir = PROJECT_ROOT / "flask-website-demo" / "uploads"
+        upload_dir.mkdir(exist_ok=True, parents=True)
+        upload_path = upload_dir / "uploaded_audio.wav"
 
         # reconstruct file from bytes
         with open(upload_path, "wb") as f:
@@ -106,9 +124,12 @@ def results_page():
             empty = 10 - full - half
             r["hearts"] = {"full": full, "half": half, "empty": empty}
 
-        # Genre
-        genre_list = classifier.top_k(GTZAN_features, k=1)
-        top_genre = genre_list[0]["genre"] if genre_list else "Unknown"
+        # Genre - handle missing classifier
+        if CLASSIFIER_AVAILABLE:
+            genre_list = classifier.top_k(GTZAN_features, k=1)
+            top_genre = genre_list[0]["genre"] if genre_list else "Unknown"
+        else:
+            top_genre = "Genre Detection Unavailable"
 
         upload_path.unlink()
         return render_template(
@@ -149,8 +170,12 @@ def results_page():
             empty = 10 - full - half
             r["hearts"] = {"full": full, "half": half, "empty": empty}
 
-        genre_list = classifier.top_k(GTZAN_features, k=1)
-        top_genre = genre_list[0]["genre"] if genre_list else "Unknown"
+        # Genre - handle missing classifier
+        if CLASSIFIER_AVAILABLE:
+            genre_list = classifier.top_k(GTZAN_features, k=1)
+            top_genre = genre_list[0]["genre"] if genre_list else "Unknown"
+        else:
+            top_genre = "Genre Detection Unavailable"
 
     finally:
         if not DEBUG_MODE and downloaded_path.exists():
