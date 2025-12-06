@@ -33,12 +33,12 @@ app = Flask(__name__)
 
 DEBUG_MODE = False
 
-# FIXED: Use absolute paths instead of relative
-recommender = RecommendationService(model_dir=str(PROJECT_ROOT / "annoy_similarity" / "model") + "/")
+# FIXED: Use your working relative paths
+recommender = RecommendationService(model_dir="../annoy_similarity/model/")
 
-# Make classifier optional - won't crash if model file is missing
+# Make classifier optional - won't crash if model file is missing (good feature from teammate!)
 try:
-    classifier = GenreModel(artifact_dir=str(PROJECT_ROOT / "genre_model" / "artifacts"))
+    classifier = GenreModel(artifact_dir="../genre_model/artifacts")
     CLASSIFIER_AVAILABLE = True
     print("✅ Genre classifier loaded successfully!")
 except FileNotFoundError as e:
@@ -100,10 +100,9 @@ def results_page():
 
     # ---- CASE 1: FILE UPLOAD ----
     if cached_file_bytes:
-        # FIXED: Use absolute path for uploads
-        upload_dir = PROJECT_ROOT / "flask-website-demo" / "uploads"
-        upload_dir.mkdir(exist_ok=True, parents=True)
-        upload_path = upload_dir / "uploaded_audio.wav"
+        # Use relative path that works from flask-website-demo directory
+        upload_path = Path("uploads") / "uploaded_audio.wav"
+        upload_path.parent.mkdir(exist_ok=True)
 
         # reconstruct file from bytes
         with open(upload_path, "wb") as f:
@@ -124,7 +123,7 @@ def results_page():
             empty = 10 - full - half
             r["hearts"] = {"full": full, "half": half, "empty": empty}
 
-        # Genre - handle missing classifier
+        # Genre - handle missing classifier (good feature from teammate!)
         if CLASSIFIER_AVAILABLE:
             genre_list = classifier.top_k(GTZAN_features, k=1)
             top_genre = genre_list[0]["genre"] if genre_list else "Unknown"
@@ -170,7 +169,7 @@ def results_page():
             empty = 10 - full - half
             r["hearts"] = {"full": full, "half": half, "empty": empty}
 
-        # Genre - handle missing classifier
+        # Genre - handle missing classifier (good feature from teammate!)
         if CLASSIFIER_AVAILABLE:
             genre_list = classifier.top_k(GTZAN_features, k=1)
             top_genre = genre_list[0]["genre"] if genre_list else "Unknown"
